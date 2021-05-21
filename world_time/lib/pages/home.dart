@@ -12,7 +12,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    data = ModalRoute.of(context).settings.arguments;//Return a map of data(list of arguments) from loading
+    data = data.isNotEmpty ? data : ModalRoute.of(context).settings.arguments;//Return a map of data(list of arguments) from loading
     print(data);
 
     //Change background depending on day time
@@ -33,8 +33,16 @@ class _HomeState extends State<Home> {
             child: Column(
               children: <Widget>[//List of widgets
                 FlatButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/location');//Navigate to a different page on the app, and push it on top of the first screen
+                    onPressed: () async {//Pass async to use await
+                      dynamic result = await Navigator.pushNamed(context, '/location');//Navigate to a different page on the app, and push it on top of the first screen
+                      setState(() {
+                        data = {
+                          'time' : result['time'],
+                          'location': result['location'],
+                          'isDaytime': result['isDaytime'],
+                          'flag': result['flag']
+                        };
+                      });
                     },
                     icon: Icon(
                         Icons.edit_location,
